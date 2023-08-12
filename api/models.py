@@ -33,11 +33,7 @@ class Datas(db.Model):
 
     def toDICT(self):
 
-        cls_dict         = {}
-        cls_dict['_id']  = self.id
-        cls_dict['data'] = self.data
-
-        return cls_dict
+        return {'_id': self.id, 'data': self.data}
 
     def toJSON(self):
 
