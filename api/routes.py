@@ -46,10 +46,12 @@ class Items(Resource):
     def get(self):
 
         items = Datas.query.all()
-        
-        return {"success" : True,
-                "msg"     : "Items found ("+ str(len( items ))+")",
-                "datas"   : str( items ) }, 200
+
+        return {
+            "success": True,
+            "msg": f"Items found ({len(items)})",
+            "datas": str(items),
+        }, 200
 
     """
        Create new item
@@ -68,9 +70,11 @@ class Items(Resource):
 
         # Save the data
         new_item.save()
-        
-        return {"success": True,
-                "msg"    : "Item successfully created ["+ str(new_item.id)+"]"}, 200
+
+        return {
+            "success": True,
+            "msg": f"Item successfully created [{str(new_item.id)}]",
+        }, 200
 
 @rest_api.route('/api/datas/<int:id>')
 class ItemManager(Resource):
@@ -80,15 +84,15 @@ class ItemManager(Resource):
     """
     def get(self, id):
 
-        item = Datas.get_by_id(id)
-
-        if not item:
+        if item := Datas.get_by_id(id):
+            return {
+                "success": True,
+                "msg": f"Successfully return item [{str(id)}]",
+                "data": item.toJSON(),
+            }, 200
+        else:
             return {"success": False,
                     "msg": "Item not found."}, 400
-
-        return {"success" : True,
-                "msg"     : "Successfully return item [" +str(id)+ "]",
-                "data"    :  item.toJSON()}, 200
 
     """
        Update Item
@@ -111,9 +115,11 @@ class ItemManager(Resource):
         item.update_data(item_data)
         item.save()
 
-        return {"success" : True,
-                "msg"     : "Item [" +str(id)+ "] successfully updated",
-                "data"    :  item.toJSON()}, 200 
+        return {
+            "success": True,
+            "msg": f"Item [{str(id)}] successfully updated",
+            "data": item.toJSON(),
+        }, 200 
 
     """
        Delete Item
@@ -131,5 +137,4 @@ class ItemManager(Resource):
         Datas.query.filter_by(id=id).delete()
         db.session.commit()
 
-        return {"success" : True,
-                "msg"     : "Item [" +str(id)+ "] successfully deleted"}, 200                           
+        return {"success": True, "msg": f"Item [{str(id)}] successfully deleted"}, 200                           
